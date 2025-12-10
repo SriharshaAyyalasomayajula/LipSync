@@ -1,4 +1,4 @@
-Kutumb — Mini Unity Demo
+Mini Unity Demo
 =========================
 
 What this contains
