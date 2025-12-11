@@ -231,10 +231,10 @@ Animator:
   m_GameObject: {fileID: 1694388104664951538}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 6d53a488351422c4b9e379c87bd0c523, type: 3}
-  m_Controller: {fileID: 9100000, guid: 253c80eb1f95ed44f976fb7a0936a597, type: 2}
+  m_Controller: {fileID: 9100000, guid: f46d13b9f42140a4eae52f887f13b385, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -3556,7 +3556,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sign in with Apple
+  m_text: Sign in with Google
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4062,7 +4062,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -100}
-  m_SizeDelta: {x: 130, y: 30}
+  m_SizeDelta: {x: 140, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6064250128184385767
 MonoBehaviour:

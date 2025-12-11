@@ -51,7 +51,8 @@ public class ReactionController : MonoBehaviour
         if (isPlayingDialogue)
             return;
 
-        StartCoroutine(PlayFullSequence());
+        // Start combined sequence: play dialogue (audio + lip sync) while running the Smile/Sad animation sequence
+        StartCoroutine(PlayCombinedSequence());
     }
 
     void OnDialogueClicked()
@@ -102,6 +103,76 @@ public class ReactionController : MonoBehaviour
             transform.rotation = initialRotation;
         }
 
+        isPlayingAnimation = false;
+    }
+
+    // New: Play audio-driven lip sync and run the reaction animation sequence at the same time.
+    IEnumerator PlayCombinedSequence()
+    {
+        if (dialogueSource == null)
+        {
+            // fallback to the animation-only sequence
+            yield return PlayFullSequence();
+            yield break;
+        }
+
+        isPlayingAnimation = true;
+        isPlayingDialogue = true;
+
+        // store and reset transform to initial to avoid cumulative drift from animations
+        if (hasStoredInitial && restoreTransformAfter)
+        {
+            transform.position = initialPosition;
+            transform.rotation = initialRotation;
+        }
+
+        // disable movement components and rigidbody
+        if (disableDuringReaction != null)
+        {
+            foreach (var b in disableDuringReaction) if (b != null) b.enabled = false;
+        }
+        if (rb != null) rb.isKinematic = true;
+
+        // Start dialogue audio and lip-sync
+        PlayIdleAnimation();
+        dialogueSource.Play();
+        if (lipSync != null)
+            lipSync.StartLipSync(dialogueSource);
+
+        // Run the same four-step reaction sequence concurrently while audio is playing.
+        // We'll start a coroutine that runs the sequence but don't block here; instead wait for audio to finish
+        // but ensure the sequence doesn't outlive the audio if it finishes earlier.
+        Coroutine reactionRoutine = StartCoroutine(PlayFullSequence());
+
+        // Wait for audio to finish
+        yield return new WaitWhile(() => dialogueSource.isPlaying);
+
+        // Stop lip sync and ensure reaction sequence has ended
+        if (lipSync != null)
+            lipSync.StopLipSync();
+
+        // If the reaction sequence is still running, stop it and perform cleanup
+        if (reactionRoutine != null)
+        {
+            StopCoroutine(reactionRoutine);
+
+            // re-enable movement components and rigidbody (same cleanup as PlayFullSequence)
+            if (disableDuringReaction != null)
+            {
+                foreach (var b in disableDuringReaction) if (b != null) b.enabled = true;
+            }
+            if (rb != null) rb.isKinematic = rbWasKinematic;
+
+            // restore transform exactly to initial to avoid residual rotation/position from animations
+            if (hasStoredInitial && restoreTransformAfter)
+            {
+                transform.position = initialPosition;
+                transform.rotation = initialRotation;
+            }
+        }
+
+        PlayIdleAnimation();
+        isPlayingDialogue = false;
         isPlayingAnimation = false;
     }
 

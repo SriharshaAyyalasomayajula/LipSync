@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Kutumb.sln"
+    "dotnet.defaultSolution": "LipSync.sln"
 }
